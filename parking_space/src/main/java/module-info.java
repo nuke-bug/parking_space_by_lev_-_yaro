@@ -4,7 +4,7 @@ module org.example.parking_space {
     requires javafx.web;
     requires java.sql;
 
-    requires org.controlsfx.controls;
+   requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
@@ -12,6 +12,6 @@ module org.example.parking_space {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens org.example.parking_space to javafx.fxml;
-    exports org.example.parking_space;
+    opens org.example.frontend to javafx.fxml;
+    exports org.example.frontend;
 }
