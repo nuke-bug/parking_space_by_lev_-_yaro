@@ -28,13 +28,10 @@ import javafx.scene.layout.Priority;
 import javafx.geometry.Insets;
 
 import org.bd.bd;
-<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.List;
-=======
 import org.bd.bd.ParkingHistory;
 
->>>>>>> Stashed changes
 
 import java.time.Duration;
 import java.time.LocalDateTime;
