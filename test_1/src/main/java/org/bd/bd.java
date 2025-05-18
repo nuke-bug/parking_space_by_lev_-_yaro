@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class bd {
     private static Connection conn;
@@ -20,6 +22,7 @@ public class bd {
         Conn();
         CreateDB();
         WriteDB();
+        Write_History();
         ReadDB();
         CloseDB();
         if (conn != null) conn.close();
@@ -62,13 +65,18 @@ public class bd {
                 "'number' INT," +  // Номер места
                 "'car_number' text," +  // Номер машины
                 "'car_brand' text," +  // Марка
-                "'сheck_in_time' text," +  // время заезда
+                "'check_in_time' text," +  // время заезда
                 "'departure_time' text," +  // время выезда ("не покидал территорию" по умолчанию)
                 "'payment' text" +  // оплата(0 по умолчанию)
                 ");");
         System.out.println("Таблица history создана");
     }
 
+    public static void Write_History() throws SQLException {
+        statmt.execute("INSERT INTO history ('number', 'owner', 'car_number', 'car_brand'," +
+                "check_in_time, 'departure_time', 'payment') " +
+                "VALUES (2, 'Velh', '89DDD09', 'BMV', '22:33 18.05.2025', 'не выехал', '0');");
+    }
     public static void WriteDB() throws SQLException {
         statmt.execute("INSERT INTO parking_spaces ('type_of_place', 'number', 'busyness', 'cost')" +
                 "VALUES ('инвалидное', 1, 'свободно', 100);");
@@ -79,7 +87,28 @@ public class bd {
         System.out.println("Таблица parking_spaces заполнена");
     }
 
+    public static class ParkingHistory {
+        private int number;
+        private String owner;
+        private String carNumber;
+        private String carBrand;
+        private String checkInTime;
+        private String departureTime;
+        private String payment;
 
+        public ParkingHistory(int number, String owner, String carNumber,
+                              String carBrand, String checkInTime,
+                              String departureTime, String payment) {
+            this.number = number;
+            this.owner = owner;
+            this.carNumber = carNumber;
+            this.carBrand = carBrand;
+            this.checkInTime = checkInTime;
+            this.departureTime = departureTime;
+            this.payment = payment;
+        }
+
+<<<<<<< Updated upstream
     public static void get_history() throws ClassNotFoundException, SQLException {
         resSet = statmt.executeQuery("SELECT * FROM history");
 
@@ -100,6 +129,40 @@ public class bd {
         System.out.println("Таблица выведена");
 
     }
+=======
+        // Только геттеры
+        public int getNumber() { return number; }
+        public String getOwner() { return owner; }
+        public String getCarNumber() { return carNumber; }
+        public String getCarBrand() { return carBrand; }
+        public String getCheckInTime() { return checkInTime; }
+        public String getDepartureTime() { return departureTime; }
+        public String getPayment() { return payment; }
+    }
+
+    public static List<ParkingHistory> getHistory() throws SQLException {
+        List<ParkingHistory> history = new ArrayList<>();
+
+        try (ResultSet rs = statmt.executeQuery("SELECT * FROM history")) {
+            while (rs.next()) {
+                history.add(new ParkingHistory(
+                        rs.getInt("number"),
+                        rs.getString("owner"),
+                        rs.getString("car_number"),
+                        rs.getString("car_brand"),
+                        rs.getString("check_in_time"),
+                        rs.getString("departure_time"),
+                        rs.getString("payment")
+                ));
+            }
+        }
+        return history;
+    }
+
+
+    public static void ReadDB() throws ClassNotFoundException, SQLException {
+        resSet = statmt.executeQuery("SELECT * FROM history");
+>>>>>>> Stashed changes
 
 
 

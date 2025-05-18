@@ -1,5 +1,20 @@
 package org.frontend;
 
+// Для JavaFX
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -11,13 +26,21 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Insets;
+
 import org.bd.bd;
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.List;
+=======
+import org.bd.bd.ParkingHistory;
+
+>>>>>>> Stashed changes
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static org.bd.bd.getHistory;
 
 public class FronEnd extends Application {
     @Override
@@ -248,10 +271,61 @@ public class FronEnd extends Application {
             return null; // Если номер не найден
         }
     }
-
     private void handleHistoryAction() {
-        System.out.println("Кнопка 'История' нажата!");
-        // Добавьте здесь код для обработки нажатия кнопки "История"
+        try {
+            Stage stage = new Stage();
+            TableView<ParkingHistory> table = new TableView<>();
+
+            // Создание колонок
+            TableColumn<ParkingHistory, Integer> numberCol = new TableColumn<>("№");
+            numberCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getNumber()).asObject());
+
+            TableColumn<ParkingHistory, String> ownerCol = new TableColumn<>("Владелец");
+            ownerCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
+
+            TableColumn<ParkingHistory, String> carNumberCol = new TableColumn<>("Номер авто");
+            carNumberCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCarNumber()));
+
+            TableColumn<ParkingHistory, String> carBrandCol = new TableColumn<>("Марка авто");
+            carBrandCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCarBrand()));
+
+            TableColumn<ParkingHistory, String> checkInCol = new TableColumn<>("Время заезда");
+            checkInCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCheckInTime()));
+
+            TableColumn<ParkingHistory, String> departureCol = new TableColumn<>("Время выезда");
+            departureCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDepartureTime()));
+
+            TableColumn<ParkingHistory, String> paymentCol = new TableColumn<>("Оплата");
+            paymentCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPayment()));
+            numberCol.setPrefWidth(50);       // Ширина для номера
+            ownerCol.setPrefWidth(150);       // Ширина для владельца
+            carNumberCol.setPrefWidth(100);   // Ширина для номера авто
+            carBrandCol.setPrefWidth(150);    // Ширина для марки авто
+            checkInCol.setPrefWidth(150);     // Ширина для времени заезда
+            departureCol.setPrefWidth(150);   // Ширина для времени выезда
+            paymentCol.setPrefWidth(100);     // Ширина для оплаты
+            // Добавляем все колонки в таблицу
+            table.getColumns().addAll(
+                    numberCol,
+                    ownerCol,
+                    carNumberCol,
+                    carBrandCol,
+                    checkInCol,
+                    departureCol,
+                    paymentCol
+            );
+
+            // Загрузка данных
+            table.getItems().setAll(getHistory());
+
+            // Настройка окна
+            stage.setScene(new Scene(table, 1000, 600));
+            stage.setTitle("История парковки");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Ошибка: " + e.getMessage()).show();
+        }
     }
 
     private void handleSearchAction() {

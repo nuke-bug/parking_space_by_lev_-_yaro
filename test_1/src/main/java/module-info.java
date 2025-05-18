@@ -3,6 +3,7 @@ module org.example.test_1 {
     requires javafx.fxml;
     requires javafx.web;
     requires java.sql;
+    requires javafx.base;
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
