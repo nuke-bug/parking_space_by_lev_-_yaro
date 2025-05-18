@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Insets;
 import org.bd.bd;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -93,8 +95,9 @@ public class FronEnd extends Application {
     }
 
     // Методы обработки действий кнопок
-    private void handleRegistrationAction() {
+    private List<String> handleRegistrationAction() {
 
+        List<String> registration = new ArrayList<>();
         // fio, carModel, licensePlate, registrationTime
         Stage registrationStage = new Stage();  // Создаем новое окно
         registrationStage.setTitle("Регистрация автомобиля");
@@ -126,28 +129,37 @@ public class FronEnd extends Application {
                 currentTimeLabel,
                 freeSpaceLabel
         );
-
-        // Создаем кнопку "Сохранить" (если нужно сохранять данные)
         Button saveButton = new Button("Сохранить");
-        saveButton.setOnAction(e -> {
-            // Здесь будет код для сохранения данных, введенных пользователем
-            String fio = fioField.getText();
-            String carModel = carModelField.getText();
-            String licensePlate = licensePlateField.getText();
-            System.out.println("ФИО: " + fio);
-            System.out.println("Марка машины: " + carModel);
-            System.out.println("Номер машины: " + licensePlate);
-            System.out.println("Время регистрации: " + registrationTime);
-
-            // Закрываем окно после сохранения
-            registrationStage.close();
-        });
         registrationLayout.getChildren().add(saveButton); // Добавляем кнопку "Сохранить"
 
         Scene registrationScene = new Scene(registrationLayout, 300, 400);  // Создаем сцену
         registrationStage.setScene(registrationScene);  // Устанавливаем сцену для окна
         registrationStage.show();  // Отображаем окно
         System.out.println("Кнопка 'Регистрация' нажата!");
+        // Создаем кнопку "Сохранить" (если нужно сохранять данные)
+
+        saveButton.setOnAction(e -> {
+            // Здесь будет код для сохранения данных, введенных пользователем
+//            String fio = fioField.getText();
+//            String carModel = carModelField.getText();
+//            String licensePlate = licensePlateField.getText();
+            registration.add(fioField.getText());
+            registration.add(carModelField.getText());
+            registration.add(licensePlateField.getText());
+            registration.add(registrationTime);
+
+//            System.out.println("ФИО: " + fio);
+//            System.out.println("Марка машины: " + carModel);
+//            System.out.println("Номер машины: " + licensePlate);
+//            System.out.println("Время регистрации: " + registrationTime);
+            System.out.println(registration);
+
+            // Закрываем окно после сохранения
+            registrationStage.close();
+        });
+
+        return registration;
+
         // Добавьте здесь код для обработки нажатия кнопки "Регистрация"
     }
 

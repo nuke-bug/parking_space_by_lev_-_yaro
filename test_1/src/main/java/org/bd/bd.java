@@ -95,28 +95,29 @@ public class bd {
             System.out.print(" name = " + name);
             System.out.print(" phone = " + phone);
             System.out.println();*/
-
         }
 
         System.out.println("Таблица выведена");
+
     }
 
 
+
     public static void ReadDB() throws ClassNotFoundException, SQLException {
-        resSet = statmt.executeQuery("SELECT * FROM users");
-
-        while (resSet.next()) {
-            int id = resSet.getInt("id");
-            String name = resSet.getString("name");
-            String phone = resSet.getString("phone");
-            System.out.println("ID = " + id);
-            System.out.println("name = " + name);
-            System.out.println("phone = " + phone);
-            System.out.println();
-
-        }
-
-        System.out.println("Таблица выведена");
+        resSet = statmt.executeQuery("SELECT * FROM history");
+//
+//        while (resSet.next()) {
+//            int id = resSet.getInt("id");
+//            String name = resSet.getString("name");
+//            String phone = resSet.getString("phone");
+//            System.out.println("ID = " + id);
+//            System.out.println("name = " + name);
+//            System.out.println("phone = " + phone);
+//            System.out.println();
+//
+//        }
+//
+//        System.out.println("Таблица выведена");
     }
 
     public static void CloseDB() throws ClassNotFoundException, SQLException
