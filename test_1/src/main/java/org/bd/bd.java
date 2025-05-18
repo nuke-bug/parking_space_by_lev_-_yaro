@@ -9,37 +9,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class bd {
-    private static Connection conn;
-    private static Statement statmt;
-    private static ResultSet resSet;
+    public static Connection conn;
+    public static Statement statmt;
+    public static ResultSet resSet;
 
     public static void Conn() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
         conn = DriverManager.getConnection("jdbc:sqlite:parking.sqlite3");
+        statmt = conn.createStatement();
         System.out.println("База подключена!");
     }
     public static void bd_main() throws Exception {
         Conn();
-        CreateDB();
-        WriteDB();
-        Write_History();
-        ReadDB();
-        CloseDB();
-        if (conn != null) conn.close();
     }
     public static void main(String[] args) throws Exception {
+        /*
         Conn();
         CreateDB();
         WriteDB();
         ReadDB();
+        getHistory();
         CloseDB();
+         */
 
         // Не забудьте закрыть соединение когда оно больше не нужно
-        if (conn != null) conn.close();
     }
 
     public static void CreateDB() throws ClassNotFoundException, SQLException {
-        statmt = conn.createStatement();
         statmt.execute("CREATE TABLE if not exists 'parking_spaces' (" +
                 "'id' INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "'type_of_place' text," +  //тип места
@@ -73,6 +69,8 @@ public class bd {
     }
 
     public static void Write_History() throws SQLException {
+        statmt.execute("INSERT INTO history (owner, number, car_number, car_brand, check_in_time, departure_time, payment)" +
+                " VALUES (2, 'Velh', '89DDD09', 'BMV', '22:33 18.05.2025', 'не выехал', '0');");
         statmt.execute("INSERT INTO history ('number', 'owner', 'car_number', 'car_brand'," +
                 "check_in_time, 'departure_time', 'payment') " +
                 "VALUES (2, 'Velh', '89DDD09', 'BMV', '22:33 18.05.2025', 'не выехал', '0');");
@@ -88,13 +86,13 @@ public class bd {
     }
 
     public static class ParkingHistory {
-        private int number;
-        private String owner;
-        private String carNumber;
-        private String carBrand;
-        private String checkInTime;
-        private String departureTime;
-        private String payment;
+        public int number;
+        public String owner;
+        public String carNumber;
+        public String carBrand;
+        public String checkInTime;
+        public String departureTime;
+        public String payment;
 
         public ParkingHistory(int number, String owner, String carNumber,
                               String carBrand, String checkInTime,
@@ -120,7 +118,6 @@ public class bd {
 
     public static List<ParkingHistory> getHistory() throws SQLException {
         List<ParkingHistory> history = new ArrayList<>();
-
         try (ResultSet rs = statmt.executeQuery("SELECT * FROM history")) {
             while (rs.next()) {
                 history.add(new ParkingHistory(
@@ -132,6 +129,14 @@ public class bd {
                         rs.getString("departure_time"),
                         rs.getString("payment")
                 ));
+
+                System.out.println(
+                        rs.getString("owner")+
+                        rs.getString("car_number")+
+                        rs.getString("car_brand")+
+                        rs.getString("check_in_time")+
+                        rs.getString("departure_time")+
+                        rs.getString("payment"));
             }
         }
         return history;

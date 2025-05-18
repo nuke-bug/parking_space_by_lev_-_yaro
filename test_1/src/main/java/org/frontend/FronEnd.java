@@ -28,6 +28,10 @@ import javafx.scene.layout.Priority;
 import javafx.geometry.Insets;
 
 import org.bd.bd;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import org.bd.bd.ParkingHistory;
@@ -37,7 +41,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.bd.bd.getHistory;
+import static org.bd.bd.*;
+
 
 public class FronEnd extends Application {
     @Override
@@ -311,10 +316,8 @@ public class FronEnd extends Application {
                     departureCol,
                     paymentCol
             );
-
             // Загрузка данных
             table.getItems().setAll(getHistory());
-
             // Настройка окна
             stage.setScene(new Scene(table, 1000, 600));
             stage.setTitle("История парковки");
