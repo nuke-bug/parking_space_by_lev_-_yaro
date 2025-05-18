@@ -108,28 +108,6 @@ public class bd {
             this.payment = payment;
         }
 
-<<<<<<< Updated upstream
-    public static void get_history() throws ClassNotFoundException, SQLException {
-        resSet = statmt.executeQuery("SELECT * FROM history");
-
-        while (resSet.next()) {
-            int number = resSet.getInt("number");
-            String owner = resSet.getString("owner");
-            String car_number = resSet.getString("car_number");
-            String car_brand = resSet.getString("car_brand");
-            String сheck_in_time = resSet.getString("сheck_in_time");
-            String departure_time = resSet.getString("departure_time");
-            String payment = resSet.getString("payment");
-            /*System.out.print(" ID = " + id);
-            System.out.print(" name = " + name);
-            System.out.print(" phone = " + phone);
-            System.out.println();*/
-        }
-
-        System.out.println("Таблица выведена");
-
-    }
-=======
         // Только геттеры
         public int getNumber() { return number; }
         public String getOwner() { return owner; }
@@ -162,25 +140,6 @@ public class bd {
 
     public static void ReadDB() throws ClassNotFoundException, SQLException {
         resSet = statmt.executeQuery("SELECT * FROM history");
->>>>>>> Stashed changes
-
-
-
-    public static void ReadDB() throws ClassNotFoundException, SQLException {
-        resSet = statmt.executeQuery("SELECT * FROM history");
-//
-//        while (resSet.next()) {
-//            int id = resSet.getInt("id");
-//            String name = resSet.getString("name");
-//            String phone = resSet.getString("phone");
-//            System.out.println("ID = " + id);
-//            System.out.println("name = " + name);
-//            System.out.println("phone = " + phone);
-//            System.out.println();
-//
-//        }
-//
-//        System.out.println("Таблица выведена");
     }
 
     public static void CloseDB() throws ClassNotFoundException, SQLException
