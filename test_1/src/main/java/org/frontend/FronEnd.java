@@ -1,0 +1,300 @@
+package org.frontend;
+
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.scene.layout.Priority;
+import javafx.geometry.Insets;
+import org.bd.bd;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class FronEnd extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        VBox vbox = createVBox();
+        Scene scene = new Scene(vbox, 400, 300);
+        primaryStage.setTitle("Парковка");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private VBox createVBox() {
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(10));
+
+        Button registration = createRegistrationButton();
+        Button departure = createDepartureButton();
+        Button history = createHistoryButton();
+        Button search = createSearchButton();
+        Button state = createStateButton();
+        Button statistics = createStatisticsButton();
+
+        root.getChildren().addAll(registration, departure, history, search, state, statistics);
+
+        return root;
+    }
+
+    private Button createRegistrationButton() {
+        Button button = new Button("Регистрация");
+        customizeButton(button);
+        button.setOnAction(event -> handleRegistrationAction()); // Используем лямбда-выражение
+        return button;
+    }
+
+    private Button createDepartureButton() {
+        Button button = new Button("Выезд");
+        customizeButton(button);
+        button.setOnAction(event -> handleDepartureAction());
+        return button;
+    }
+
+    private Button createHistoryButton() {
+        Button button = new Button("История");
+        customizeButton(button);
+        button.setOnAction(event -> handleHistoryAction());
+        return button;
+    }
+
+    private Button createSearchButton() {
+        Button button = new Button("Поиск");
+        customizeButton(button);
+        button.setOnAction(event -> handleSearchAction());
+        return button;
+    }
+
+    private Button createStateButton() {
+        Button button = new Button("Текущее состояние");
+        customizeButton(button);
+        button.setOnAction(event -> handleStateAction());
+        return button;
+    }
+
+    private Button createStatisticsButton() {
+        Button button = new Button("Статистика");
+        customizeButton(button);
+        button.setOnAction(event -> handleStatisticsAction());
+        return button;
+    }
+
+    private void customizeButton(Button button) {
+        double buttonHeight = 40;
+        button.setPrefHeight(buttonHeight);
+        button.setMaxWidth(Double.MAX_VALUE);
+        VBox.setVgrow(button, Priority.ALWAYS);
+    }
+
+    // Методы обработки действий кнопок
+    private void handleRegistrationAction() {
+
+        // fio, carModel, licensePlate, registrationTime
+        Stage registrationStage = new Stage();  // Создаем новое окно
+        registrationStage.setTitle("Регистрация автомобиля");
+
+        // Создаем поля ввода
+        TextField fioField = new TextField();
+        fioField.setPromptText("ФИО");
+        TextField carModelField = new TextField();
+        carModelField.setPromptText("Марка машины");
+        TextField licensePlateField = new TextField();
+        licensePlateField.setPromptText("Номер машины");
+
+        // Получаем текущее время
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
+        final String registrationTime = formattedDateTime;
+        Label currentTimeLabel = new Label("Текущее время: " + formattedDateTime);
+
+        Label freeSpaceLabel = new Label("Свободное место: (здесь будет логика определения места)"); //Заменить на реальную логику
+
+        // Создаем компоновку для полей ввода
+        VBox registrationLayout = new VBox(10);
+        registrationLayout.setPadding(new Insets(10));
+        registrationLayout.getChildren().addAll(
+                new Label("ФИО:"), fioField,
+                new Label("Марка машины:"), carModelField,
+                new Label("Номер машины:"), licensePlateField,
+                currentTimeLabel,
+                freeSpaceLabel
+        );
+
+        // Создаем кнопку "Сохранить" (если нужно сохранять данные)
+        Button saveButton = new Button("Сохранить");
+        saveButton.setOnAction(e -> {
+            // Здесь будет код для сохранения данных, введенных пользователем
+            String fio = fioField.getText();
+            String carModel = carModelField.getText();
+            String licensePlate = licensePlateField.getText();
+            System.out.println("ФИО: " + fio);
+            System.out.println("Марка машины: " + carModel);
+            System.out.println("Номер машины: " + licensePlate);
+            System.out.println("Время регистрации: " + registrationTime);
+
+            // Закрываем окно после сохранения
+            registrationStage.close();
+        });
+        registrationLayout.getChildren().add(saveButton); // Добавляем кнопку "Сохранить"
+
+        Scene registrationScene = new Scene(registrationLayout, 300, 400);  // Создаем сцену
+        registrationStage.setScene(registrationScene);  // Устанавливаем сцену для окна
+        registrationStage.show();  // Отображаем окно
+        System.out.println("Кнопка 'Регистрация' нажата!");
+        // Добавьте здесь код для обработки нажатия кнопки "Регистрация"
+    }
+
+    private void handleDepartureAction() {
+        // departureTime
+        Stage departureStage = new Stage();
+        departureStage.setTitle("Выезд автомобиля");
+
+        // Создаем поле ввода для номера машины
+        TextField licensePlateField = new TextField();
+        licensePlateField.setPromptText("Номер машины");
+
+        // Получаем текущее время
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
+        final String departureTime = formattedDateTime;
+        Label currentTimeLabel = new Label("Текущее время: " + formattedDateTime);
+
+        // Создаем компоновку
+        VBox departureLayout = new VBox(10);
+        departureLayout.setPadding(new Insets(10));
+        departureLayout.getChildren().addAll(
+                new Label("Номер машины:"), licensePlateField,
+                currentTimeLabel
+        );
+        System.out.println("Время выезда: " + departureTime);
+
+        // Создаем кнопку "Подтвердить выезд"
+        Button confirmDepartureButton = new Button("Подтвердить выезд");
+        confirmDepartureButton.setOnAction(e -> {
+            String licensePlate = licensePlateField.getText();
+            System.out.println("Номер машины: " + licensePlate);
+
+
+            // Здесь должна быть логика получения времени въезда из базы данных
+            // и расчета времени пребывания на парковке.
+            LocalDateTime entryTime = getEntryTimeFromDatabase(licensePlate); // Пример
+
+            if (entryTime == null) {
+                // Обработка случая, когда автомобиль с таким номером не найден
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Автомобиль с таким номером не найден!");
+                alert.showAndWait();
+                return;
+            }
+
+            LocalDateTime exitTime = LocalDateTime.now();
+            Duration duration = Duration.between(entryTime, exitTime);
+
+            // Расчет стоимости (пример: 50 рублей в час)
+            double hourlyRate = 50.0;
+            double totalCost = (duration.toMinutes() / 60.0) * hourlyRate;
+
+            // Создание окна для отображения цены
+            Stage priceStage = new Stage();
+            priceStage.setTitle("Стоимость парковки");
+
+            Label priceLabel = new Label("К оплате: " + String.format("%.2f", totalCost) + " рублей");
+            VBox priceLayout = new VBox(10, priceLabel);
+            priceLayout.setAlignment(Pos.CENTER);
+            priceLayout.setPadding(new Insets(20));
+
+            Scene priceScene = new Scene(priceLayout, 250, 100);
+            priceStage.setScene(priceScene);
+            priceStage.show();
+
+            departureStage.close(); // Закрываем окно выезда
+        });
+
+        departureLayout.getChildren().add(confirmDepartureButton);
+
+        Scene departureScene = new Scene(departureLayout, 300, 300);
+        departureStage.setScene(departureScene);
+        departureStage.show();
+        System.out.println("Кнопка 'Выезд' нажата!");
+        // Добавьте здесь код для обработки нажатия кнопки "Выезд"
+    }
+
+    // Заглушка для получения времени въезда из базы данных
+    private LocalDateTime getEntryTimeFromDatabase(String licensePlate) {
+        // Здесь должна быть логика подключения к базе данных и получения времени въезда
+        // по номеру машины.  В данном примере возвращается фиксированное время.
+        if ("А123БВ77".equals(licensePlate)) { //пример с номером
+            return LocalDateTime.of(2024, 1, 1, 10, 0); // Пример: 1 января 2024, 10:00
+        } else {
+            return null; // Если номер не найден
+        }
+    }
+
+    private void handleHistoryAction() {
+        System.out.println("Кнопка 'История' нажата!");
+        // Добавьте здесь код для обработки нажатия кнопки "История"
+    }
+
+    private void handleSearchAction() {
+        // licensePlate
+        Stage searchStage = new Stage();
+        searchStage.setTitle("Поиск по номеру");
+
+        VBox searchLayout = new VBox(10);
+        searchLayout.setPadding(new Insets(10));
+
+        TextField searchField = new TextField();
+        searchField.setPromptText("Введите номер машины");
+
+        Button searchConfirmButton = new Button("Искать");
+        customizeButton(searchConfirmButton);
+
+        Label resultLabel = new Label(""); // Для отображения результатов поиска
+
+        searchConfirmButton.setOnAction(event -> {
+            String licensePlate = searchField.getText().toUpperCase();  // Получаем номер и приводим к верхнему регистру
+            System.out.println("Номер машины" + licensePlate);
+//            CarInfo carInfo = findCarByLicensePlate(licensePlate);
+//
+//            if (carInfo != null) {
+//                resultLabel.setText("ФИО: " + carInfo.ownerName + ", Модель: " + carInfo.carModel);
+//            } else {
+//                resultLabel.setText("Машина с таким номером не найдена.");
+//            }
+        });
+
+        searchLayout.getChildren().addAll(searchField, searchConfirmButton, resultLabel);
+
+        Scene searchScene = new Scene(searchLayout, 300, 200);
+        searchStage.setScene(searchScene);
+        searchStage.show();
+        System.out.println("Кнопка 'Поиск' нажата!");
+        // Добавьте здесь код для обработки нажатия кнопки "Поиск"
+    }
+
+    private void handleStateAction() {
+        System.out.println("Кнопка 'Текущее состояние' нажата!");
+        // Добавьте здесь код для обработки нажатия кнопки "Текущее состояние"
+    }
+
+    private void handleStatisticsAction() {
+        System.out.println("Кнопка 'Статистика' нажата!");
+        // Добавьте здесь код для обработки нажатия кнопки "Статистика"
+    }
+
+    public static void main(String[] args) {
+        try{
+            bd.bd_main();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        launch(args);
+    }
+}
