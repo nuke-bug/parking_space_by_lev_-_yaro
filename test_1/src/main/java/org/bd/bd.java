@@ -8,6 +8,9 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.frontend.FronEnd;
+import org.frontend.FronEnd.*;
+
 public class bd {
     public static Connection conn;
     public static Statement statmt;
@@ -69,8 +72,16 @@ public class bd {
     }
 
     public static void Write_History() throws SQLException {
+
+        List<String> registration = FronEnd.handleRegistrationAction();
+        String owner = registration.get(0);
+        String car_brand = registration.get(1);
+        String car_number = registration.get(2);
+        String check_in_time = registration.get(3);
+        String number = registration.get(4);
+
         statmt.execute("INSERT INTO history (owner, number, car_number, car_brand, check_in_time, departure_time, payment)" +
-                " VALUES (2, 'Velh', '89DDD09', 'BMV', '22:33 18.05.2025', 'не выехал', '0');");
+                " VALUES (" + owner + ", " + number + ", " + car_number + ", " + car_brand + ", " + check_in_time + ", 'не выехал', '0');");
         statmt.execute("INSERT INTO history ('number', 'owner', 'car_number', 'car_brand'," +
                 "check_in_time, 'departure_time', 'payment') " +
                 "VALUES (2, 'Velh', '89DDD09', 'BMV', '22:33 18.05.2025', 'не выехал', '0');");

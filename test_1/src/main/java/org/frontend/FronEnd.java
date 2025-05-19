@@ -14,16 +14,10 @@ import javafx.stage.Stage;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-
-import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.scene.layout.Priority;
 import javafx.geometry.Insets;
 
@@ -120,7 +114,7 @@ public class FronEnd extends Application {
     }
 
     // Методы обработки действий кнопок
-    private List<String> handleRegistrationAction() {
+    public static List<String> handleRegistrationAction() {
 
         List<String> registration = new ArrayList<>();
         // fio, carModel, licensePlate, registrationTime
@@ -134,6 +128,8 @@ public class FronEnd extends Application {
         carModelField.setPromptText("Марка машины");
         TextField licensePlateField = new TextField();
         licensePlateField.setPromptText("Номер машины");
+        TextField freeSpaceField = new TextField();
+        freeSpaceField.setPromptText("Номер свободного места");
 
         // Получаем текущее время
         LocalDateTime now = LocalDateTime.now();
@@ -142,8 +138,6 @@ public class FronEnd extends Application {
         final String registrationTime = formattedDateTime;
         Label currentTimeLabel = new Label("Текущее время: " + formattedDateTime);
 
-        Label freeSpaceLabel = new Label("Свободное место: (здесь будет логика определения места)"); //Заменить на реальную логику
-
         // Создаем компоновку для полей ввода
         VBox registrationLayout = new VBox(10);
         registrationLayout.setPadding(new Insets(10));
@@ -151,8 +145,8 @@ public class FronEnd extends Application {
                 new Label("ФИО:"), fioField,
                 new Label("Марка машины:"), carModelField,
                 new Label("Номер машины:"), licensePlateField,
-                currentTimeLabel,
-                freeSpaceLabel
+                new Label("Свободное место: "), freeSpaceField,
+                currentTimeLabel
         );
         Button saveButton = new Button("Сохранить");
         registrationLayout.getChildren().add(saveButton); // Добавляем кнопку "Сохранить"
@@ -172,19 +166,19 @@ public class FronEnd extends Application {
             registration.add(carModelField.getText());
             registration.add(licensePlateField.getText());
             registration.add(registrationTime);
+            registration.add(freeSpaceField.getText());
 
 //            System.out.println("ФИО: " + fio);
 //            System.out.println("Марка машины: " + carModel);
 //            System.out.println("Номер машины: " + licensePlate);
 //            System.out.println("Время регистрации: " + registrationTime);
-            System.out.println(registration);
+//            System.out.println(registration);
 
             // Закрываем окно после сохранения
             registrationStage.close();
         });
 
         return registration;
-
         // Добавьте здесь код для обработки нажатия кнопки "Регистрация"
     }
 
@@ -418,6 +412,7 @@ public class FronEnd extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         launch(args);
     }
 }
