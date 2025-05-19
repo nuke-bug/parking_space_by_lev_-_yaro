@@ -106,7 +106,7 @@ public class FronEnd extends Application {
         return button;
     }
 
-    private void customizeButton(Button button) {
+    public static void customizeButton(Button button) {
         double buttonHeight = 40;
         button.setPrefHeight(buttonHeight);
         button.setMaxWidth(Double.MAX_VALUE);
@@ -117,7 +117,7 @@ public class FronEnd extends Application {
     public static List<String> handleRegistrationAction() {
 
         List<String> registration = new ArrayList<>();
-        // fio, carModel, licensePlate, registrationTime
+        // fio, carModel, licensePlate, registrationTime, freeSpaceField
         Stage registrationStage = new Stage();  // Создаем новое окно
         registrationStage.setTitle("Регистрация автомобиля");
 
@@ -182,7 +182,9 @@ public class FronEnd extends Application {
         // Добавьте здесь код для обработки нажатия кнопки "Регистрация"
     }
 
-    private void handleDepartureAction() {
+    public static List<String> handleDepartureAction() {
+
+        List<String> departure = new ArrayList<>();
         // departureTime
         Stage departureStage = new Stage();
         departureStage.setTitle("Выезд автомобиля");
@@ -211,39 +213,41 @@ public class FronEnd extends Application {
         Button confirmDepartureButton = new Button("Подтвердить выезд");
         confirmDepartureButton.setOnAction(e -> {
             String licensePlate = licensePlateField.getText();
-            System.out.println("Номер машины: " + licensePlate);
+            departure.add(departureTime);
+            departure.add(licensePlateField.getText());
+            System.out.println(departure);
 
 
-            // Здесь должна быть логика получения времени въезда из базы данных
-            // и расчета времени пребывания на парковке.
-            LocalDateTime entryTime = getEntryTimeFromDatabase(licensePlate); // Пример
-
-            if (entryTime == null) {
-                // Обработка случая, когда автомобиль с таким номером не найден
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Автомобиль с таким номером не найден!");
-                alert.showAndWait();
-                return;
-            }
-
-            LocalDateTime exitTime = LocalDateTime.now();
-            Duration duration = Duration.between(entryTime, exitTime);
-
-            // Расчет стоимости (пример: 50 рублей в час)
-            double hourlyRate = 50.0;
-            double totalCost = (duration.toMinutes() / 60.0) * hourlyRate;
-
-            // Создание окна для отображения цены
-            Stage priceStage = new Stage();
-            priceStage.setTitle("Стоимость парковки");
-
-            Label priceLabel = new Label("К оплате: " + String.format("%.2f", totalCost) + " рублей");
-            VBox priceLayout = new VBox(10, priceLabel);
-            priceLayout.setAlignment(Pos.CENTER);
-            priceLayout.setPadding(new Insets(20));
-
-            Scene priceScene = new Scene(priceLayout, 250, 100);
-            priceStage.setScene(priceScene);
-            priceStage.show();
+//            // Здесь должна быть логика получения времени въезда из базы данных
+//            // и расчета времени пребывания на парковке.
+//            LocalDateTime entryTime = getEntryTimeFromDatabase(licensePlate); // Пример
+//
+//            if (entryTime == null) {
+//                // Обработка случая, когда автомобиль с таким номером не найден
+//                Alert alert = new Alert(Alert.AlertType.ERROR, "Автомобиль с таким номером не найден!");
+//                alert.showAndWait();
+//                return;
+//            }
+//
+//            LocalDateTime exitTime = LocalDateTime.now();
+//            Duration duration = Duration.between(entryTime, exitTime);
+//
+//            // Расчет стоимости (пример: 50 рублей в час)
+//            double hourlyRate = 50.0;
+//            double totalCost = (duration.toMinutes() / 60.0) * hourlyRate;
+//
+//            // Создание окна для отображения цены
+//            Stage priceStage = new Stage();
+//            priceStage.setTitle("Стоимость парковки");
+//
+//            Label priceLabel = new Label("К оплате: " + String.format("%.2f", totalCost) + " рублей");
+//            VBox priceLayout = new VBox(10, priceLabel);
+//            priceLayout.setAlignment(Pos.CENTER);
+//            priceLayout.setPadding(new Insets(20));
+//
+//            Scene priceScene = new Scene(priceLayout, 250, 100);
+//            priceStage.setScene(priceScene);
+//            priceStage.show();
 
             departureStage.close(); // Закрываем окно выезда
         });
@@ -254,6 +258,8 @@ public class FronEnd extends Application {
         departureStage.setScene(departureScene);
         departureStage.show();
         System.out.println("Кнопка 'Выезд' нажата!");
+
+        return departure;
         // Добавьте здесь код для обработки нажатия кнопки "Выезд"
     }
 
@@ -322,7 +328,7 @@ public class FronEnd extends Application {
         }
     }
 
-    private void handleSearchAction() {
+    public static String handleSearchAction() {
         // licensePlate
         Stage searchStage = new Stage();
         searchStage.setTitle("Поиск по номеру");
@@ -340,7 +346,7 @@ public class FronEnd extends Application {
 
         searchConfirmButton.setOnAction(event -> {
             String licensePlate = searchField.getText().toUpperCase();  // Получаем номер и приводим к верхнему регистру
-            System.out.println("Номер машины" + licensePlate);
+            System.out.println("Номер машины: " + licensePlate);
 //            CarInfo carInfo = findCarByLicensePlate(licensePlate);
 //
 //            if (carInfo != null) {
@@ -356,6 +362,7 @@ public class FronEnd extends Application {
         searchStage.setScene(searchScene);
         searchStage.show();
         System.out.println("Кнопка 'Поиск' нажата!");
+        return searchField.getText().toUpperCase();
         // Добавьте здесь код для обработки нажатия кнопки "Поиск"
     }
 

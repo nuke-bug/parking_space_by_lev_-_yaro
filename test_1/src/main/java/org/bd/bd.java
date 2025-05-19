@@ -72,13 +72,20 @@ public class bd {
     }
 
     public static void Write_History() throws SQLException {
-
+        // данные из регистрации
         List<String> registration = FronEnd.handleRegistrationAction();
         String owner = registration.get(0);
         String car_brand = registration.get(1);
         String car_number = registration.get(2);
         String check_in_time = registration.get(3);
         String number = registration.get(4);
+
+        // данные из выезда
+        List<String> depature = FronEnd.handleDepartureAction();
+        String departure_time = depature.get(0);
+        String depature_car_number = depature.get(1);
+
+        String search_car_number = FronEnd.handleSearchAction();
 
         statmt.execute("INSERT INTO history (owner, number, car_number, car_brand, check_in_time, departure_time, payment)" +
                 " VALUES (" + owner + ", " + number + ", " + car_number + ", " + car_brand + ", " + check_in_time + ", 'не выехал', '0');");
