@@ -71,9 +71,7 @@ public class bd {
         System.out.println("Таблица history создана");
     }
 
-    public static void Write_History() throws SQLException {
-        // данные из регистрации
-        List<String> registration = FronEnd.handleRegistrationAction();
+    public static void post_new_client(List<String> registration) throws SQLException {
         String owner = registration.get(0);
         String car_brand = registration.get(1);
         String car_number = registration.get(2);
@@ -81,18 +79,16 @@ public class bd {
         String number = registration.get(4);
 
         // данные из выезда
-        List<String> depature = FronEnd.handleDepartureAction();
-        String departure_time = depature.get(0);
-        String depature_car_number = depature.get(1);
-
-        String search_car_number = FronEnd.handleSearchAction();
+//        List<String> depature = FronEnd.handleDepartureAction();
+//        String departure_time = depature.get(0);
+//        String depature_car_number = depature.get(1);
+//
+//        String search_car_number = FronEnd.handleSearchAction();
 
         statmt.execute("INSERT INTO history (owner, number, car_number, car_brand, check_in_time, departure_time, payment)" +
-                " VALUES (" + owner + ", " + number + ", " + car_number + ", " + car_brand + ", " + check_in_time + ", 'не выехал', '0');");
-        statmt.execute("INSERT INTO history ('number', 'owner', 'car_number', 'car_brand'," +
-                "check_in_time, 'departure_time', 'payment') " +
-                "VALUES (2, 'Velh', '89DDD09', 'BMV', '22:33 18.05.2025', 'не выехал', '0');");
+                " VALUES ('" + owner + "', " + number + ", '" + car_number + "', '" + car_brand + "', '" + check_in_time + "', 'не выехал', '0');");
     }
+
     public static void WriteDB() throws SQLException {
         statmt.execute("INSERT INTO parking_spaces ('type_of_place', 'number', 'busyness', 'cost')" +
                 "VALUES ('инвалидное', 1, 'свободно', 100);");
@@ -102,7 +98,11 @@ public class bd {
                 "VALUES ('обрезанное(мотоцикл)', 3, 'занято', 300);");
         System.out.println("Таблица parking_spaces заполнена");
     }
-
+    public static void Write_History() throws SQLException {
+                statmt.execute("INSERT INTO history ('number', 'owner', 'car_number', 'car_brand'," +
+                "check_in_time, 'departure_time', 'payment') " +
+                "VALUES (2, 'Velh', '89DDD09', 'BMV', '22:33 18.05.2025', 'не выехал', '0');");
+    }
     public static class ParkingHistory {
         public int number;
         public String owner;

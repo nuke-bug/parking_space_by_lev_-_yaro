@@ -148,7 +148,10 @@ public class FronEnd extends Application {
                 new Label("Свободное место: "), freeSpaceField,
                 currentTimeLabel
         );
+
         Button saveButton = new Button("Сохранить");
+        customizeButton(saveButton);
+        //saveButton.setOnAction(event -> handleSaveRegistrationAction(registration)); // Используем лямбда-выражение
         registrationLayout.getChildren().add(saveButton); // Добавляем кнопку "Сохранить"
 
         Scene registrationScene = new Scene(registrationLayout, 300, 400);  // Создаем сцену
@@ -158,26 +161,20 @@ public class FronEnd extends Application {
         // Создаем кнопку "Сохранить" (если нужно сохранять данные)
 
         saveButton.setOnAction(e -> {
-            // Здесь будет код для сохранения данных, введенных пользователем
-//            String fio = fioField.getText();
-//            String carModel = carModelField.getText();
-//            String licensePlate = licensePlateField.getText();
             registration.add(fioField.getText());
             registration.add(carModelField.getText());
             registration.add(licensePlateField.getText());
             registration.add(registrationTime);
             registration.add(freeSpaceField.getText());
-
-//            System.out.println("ФИО: " + fio);
-//            System.out.println("Марка машины: " + carModel);
-//            System.out.println("Номер машины: " + licensePlate);
-//            System.out.println("Время регистрации: " + registrationTime);
-//            System.out.println(registration);
-
             // Закрываем окно после сохранения
             registrationStage.close();
+            try{
+                post_new_client(registration);
+            } catch (Exception e_1) {
+                e_1.printStackTrace();
+            }
+            System.out.println("Кнопка 'Сохранить' нажата!");
         });
-
         return registration;
         // Добавьте здесь код для обработки нажатия кнопки "Регистрация"
     }
