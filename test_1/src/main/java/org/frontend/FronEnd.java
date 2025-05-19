@@ -365,9 +365,46 @@ public class FronEnd extends Application {
         // Добавьте здесь код для обработки нажатия кнопки "Поиск"
     }
 
-    private void handleStateAction() {
+    private void handleStateAction() {//не сделано!
         System.out.println("Кнопка 'Текущее состояние' нажата!");
-        // Добавьте здесь код для обработки нажатия кнопки "Текущее состояние"
+        try {
+            Stage stage = new Stage();
+            TableView<ParkingSpace> table = new TableView<>();
+
+            // Создание колонок
+            TableColumn<ParkingSpace, Integer> numberCol = new TableColumn<>("Номер места");
+            numberCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getNumber()).asObject());
+
+            TableColumn<ParkingSpace, String> typeCol = new TableColumn<>("Тип места");
+            typeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getType()));
+
+            TableColumn<ParkingSpace, String> busynessCol = new TableColumn<>("Занятость");
+            busynessCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCarBusyness()));
+
+            TableColumn<ParkingSpace, String> costCol = new TableColumn<>("Стоимость аренды в час");
+            costCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCost()));
+
+            numberCol.setPrefWidth(150);       // Ширина для номера
+            typeCol.setPrefWidth(150);       // Ширина для владельца
+            busynessCol.setPrefWidth(150);   // Ширина для номера авто
+            costCol.setPrefWidth(150);  // Ширина для оплаты
+            // Добавляем все колонки в таблицу
+            table.getColumns().addAll(
+                    numberCol,
+                    typeCol,
+                    busynessCol,
+                    costCol
+            );
+            // Загрузка данных
+            table.getItems().setAll(get_parking_spaces());
+            // Настройка окна
+            stage.setScene(new Scene(table, 1000, 600));
+            stage.setTitle("Текущее состояние");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Ошибка: " + e.getMessage()).show();
+        }
     }
 
     private void handleStatisticsAction() {

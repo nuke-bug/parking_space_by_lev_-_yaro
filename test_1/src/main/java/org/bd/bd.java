@@ -129,7 +129,7 @@ public class bd {
                         rs.getString("departure_time"),
                         rs.getString("payment")
                 ));
-
+                /*
                 System.out.println(
                         rs.getString("owner")+
                         rs.getString("car_number")+
@@ -137,10 +137,50 @@ public class bd {
                         rs.getString("check_in_time")+
                         rs.getString("departure_time")+
                         rs.getString("payment"));
+                        */
             }
         }
         return history;
     }
+
+
+
+    public static class ParkingSpace {
+        public int number;
+        public String type_of_place;
+        public String busyness;
+        public String cost;
+
+        public ParkingSpace(int number, String type_of_place, String busyness,
+                              String cost) {
+            this.number = number;
+            this.type_of_place = type_of_place;
+            this.busyness = busyness;
+            this.cost = cost;
+        }
+
+        // Только геттеры
+        public int getNumber() { return number; }
+        public String getType() { return type_of_place; }
+        public String getCarBusyness() { return busyness; }
+        public String getCost() { return cost; }
+    }
+
+    public static List<ParkingSpace> get_parking_spaces()throws SQLException {
+        List<ParkingSpace> parking_spaces = new ArrayList<>();
+        try (ResultSet rs = statmt.executeQuery("SELECT * FROM parking_spaces")) {
+            while (rs.next()) {
+                parking_spaces.add(new ParkingSpace(
+                        rs.getInt("number"),
+                        rs.getString("type_of_place"),
+                        rs.getString("busyness"),
+                        rs.getString("cost")
+                ));
+            }
+        }
+        return parking_spaces;
+    }
+
 
 
     public static void ReadDB() throws ClassNotFoundException, SQLException {
