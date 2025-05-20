@@ -117,10 +117,6 @@ public class FronEnd extends Application {
     // Методы обработки действий кнопок
     public static void handleRegistrationAction() {
 
-        List<String> registration = new ArrayList<>();
-        Stage registrationStage = new Stage();  // Создаем новое окно
-        registrationStage.setTitle("Регистрация автомобиля");
-
         try {
             Stage stage = new Stage();
             TableView<ParkingSpace> table = new TableView<>();
@@ -148,12 +144,16 @@ public class FronEnd extends Application {
             table.getItems().setAll(get_free_places());
             // Настройка окна
             stage.setScene(new Scene(table, 1000, 600));
-            stage.setTitle("Текущее состояние");
+            stage.setTitle("Свободные места");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Ошибка: " + e.getMessage()).show();
         }
+
+        Stage registrationStage = new Stage();  // Создаем новое окно
+        registrationStage.setTitle("Регистрация автомобиля");
+
         // Создаем поля ввода
         TextField fioField = new TextField();
         fioField.setPromptText("ФИО");
@@ -181,12 +181,6 @@ public class FronEnd extends Application {
                 new Label("Свободное место: "), freeSpaceField,
                 currentTimeLabel
         );
-        String fio = fioField.getText();
-        String carModel = carModelField.getText();
-        String licensePlate = licensePlateField.getText();
-        String freeSpace = freeSpaceField.getText();
-
-
 
         Button saveButton = new Button("Сохранить");
         customizeButton(saveButton);
@@ -199,15 +193,22 @@ public class FronEnd extends Application {
         // Создаем кнопку "Сохранить" (если нужно сохранять данные)
         saveButton.setOnAction(e -> {
             try{
+                String fio = fioField.getText();
+                String carModel = carModelField.getText();
+                String licensePlate = licensePlateField.getText();
+                String freeSpace = freeSpaceField.getText();
+
+                if (fio.isEmpty() || carModel.isEmpty() || licensePlate.isEmpty() || freeSpace.isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "Пожалуйста, заполните все поля.").show();
+                return; // Прерываем выполнение, если поля не заполнены
+            }
+                List<String> registration = new ArrayList<>();
                 registration.add(fio);
                 registration.add(carModel);
                 registration.add(licensePlate);
                 registration.add(registrationTime);
                 registration.add(freeSpace);
-                if (fio.isEmpty() || carModel.isEmpty() || licensePlate.isEmpty() || freeSpace.isEmpty()) {
-                    new Alert(Alert.AlertType.WARNING, "Пожалуйста, заполните все поля.").show();
-                    return; // Прерываем выполнение, если поля не заполнены
-                }
+
                 post_new_client(registration);
                 // Закрываем окно после сохранения
                 registrationStage.close();
@@ -571,6 +572,7 @@ public class FronEnd extends Application {
 
         double totalCost = (hours + 1) * pricePerHour;
         System.out.println(totalCost);
+        // Добавить функцию которая запихнет её в бд
         return String.valueOf(totalCost);
     }
 
