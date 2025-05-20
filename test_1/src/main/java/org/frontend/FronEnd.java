@@ -35,6 +35,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.math.BigDecimal;
 
 import static org.bd.bd.*;
 
@@ -255,7 +256,7 @@ public class FronEnd extends Application {
             departure.add(licensePlateField.getText());
             System.out.println(departure);
             try{
-                String totalPrise = get_cost(bd.post_old_client(departure), departureTime);
+                String totalPrise = get_cost(post_old_client(departure), departureTime);
 //                if (departureTime == null) {
 //                    // Обработка случая, когда автомобиль с таким номером не найден
 //                    Alert alert = new Alert(Alert.AlertType.ERROR, "Автомобиль с таким номером не найден!");
@@ -289,17 +290,6 @@ public class FronEnd extends Application {
 
         return departure;
         // Добавьте здесь код для обработки нажатия кнопки "Выезд"
-    }
-
-    // Заглушка для получения времени въезда из базы данных
-    private LocalDateTime getEntryTimeFromDatabase(String licensePlate) {
-        // Здесь должна быть логика подключения к базе данных и получения времени въезда
-        // по номеру машины.  В данном примере возвращается фиксированное время.
-        if ("А123БВ77".equals(licensePlate)) { //пример с номером
-            return LocalDateTime.of(2024, 1, 1, 10, 0); // Пример: 1 января 2024, 10:00
-        } else {
-            return null; // Если номер не найден
-        }
     }
 
     public static void handleCarHistoryAction(String car_number) {
@@ -357,9 +347,12 @@ public class FronEnd extends Application {
         }
     }
 
+    private TableView<ParkingHistory> tableView;
+
     private void handleHistoryAction() {
         try {
             Stage stage = new Stage();
+            Label totalPaymentLabel = null;
             TableView<ParkingHistory> table = new TableView<>();
 
             // Создание колонок
@@ -402,6 +395,16 @@ public class FronEnd extends Application {
             );
             // Загрузка данных
             table.getItems().setAll(getHistory());
+            Button calculateButton = new Button("Рассчитать общий доход");
+            calculateButton.setOnAction(e -> {
+                String total = totalPayment(tableView.getItems()); // Вызываем метод напрямую
+                totalPaymentLabel.setText("Общий доход: " + total);
+            });
+
+            VBox vbox = new VBox(10);
+            vbox.setPadding(new Insets(10));
+            vbox.getChildren().addAll(tableView, calculateButton, totalPaymentLabel);
+            
             // Настройка окна
             stage.setScene(new Scene(table, 1000, 600));
             stage.setTitle("История парковки");
@@ -576,10 +579,20 @@ public class FronEnd extends Application {
         return String.valueOf(totalCost);
     }
 
+    public static String totalPayment (ObservableList<ParkingHistory> data) {
+        BigDecimal totalPay = BigDecimal.ZERO;
+        for (ParkingHistory history : data) {
+            String paymentString = history.getPayment();
+            BigDecimal payment = new BigDecimal(paymentString);
+            totalPay = totalPay.add(payment);
+        }
+        return totalPay.toString();
+    }
+
 
     public static void main(String[] args) {
         try{
-            bd.bd_main();
+            bd_main();
         } catch (Exception e) {
             e.printStackTrace();
         }
