@@ -34,6 +34,7 @@ import org.bd.bd.ParkingHistory;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import static org.bd.bd.*;
 
@@ -218,43 +219,30 @@ public class FronEnd extends Application {
             departure.add(departureTime);
             departure.add(licensePlateField.getText());
             System.out.println(departure);
+            try{
+                String totalPrise = get_cost(bd.post_old_client(departure), departureTime);
 
-
-//            // Здесь должна быть логика получения времени въезда из базы данных
-//            // и расчета времени пребывания на парковке.
-//            LocalDateTime entryTime = getEntryTimeFromDatabase(licensePlate); // Пример
-//
 //            if (entryTime == null) {
 //                // Обработка случая, когда автомобиль с таким номером не найден
 //                Alert alert = new Alert(Alert.AlertType.ERROR, "Автомобиль с таким номером не найден!");
 //                alert.showAndWait();
 //                return;
 //            }
-//
-//            LocalDateTime exitTime = LocalDateTime.now();
-//            Duration duration = Duration.between(entryTime, exitTime);
-//
-//            // Расчет стоимости (пример: 50 рублей в час)
-//            double hourlyRate = 50.0;
-//            double totalCost = (duration.toMinutes() / 60.0) * hourlyRate;
-//
-//            // Создание окна для отображения цены
-//            Stage priceStage = new Stage();
-//            priceStage.setTitle("Стоимость парковки");
-//
-//            Label priceLabel = new Label("К оплате: " + String.format("%.2f", totalCost) + " рублей");
-//            VBox priceLayout = new VBox(10, priceLabel);
-//            priceLayout.setAlignment(Pos.CENTER);
-//            priceLayout.setPadding(new Insets(20));
-//
-//            Scene priceScene = new Scene(priceLayout, 250, 100);
-//            priceStage.setScene(priceScene);
-//            priceStage.show();
-            try{
-                bd.post_old_client(departure);
+                Stage priceStage = new Stage();
+                priceStage.setTitle("Стоимость парковки");
+
+                Label priceLabel = new Label("К оплате: " + totalPrise + " рублей");
+                VBox priceLayout = new VBox(10, priceLabel);
+                priceLayout.setAlignment(Pos.CENTER);
+                priceLayout.setPadding(new Insets(20));
+
+                Scene priceScene = new Scene(priceLayout, 250, 100);
+                priceStage.setScene(priceScene);
+                priceStage.show();
             } catch (Exception e_1) {
                 e_1.printStackTrace();
             }
+
             departureStage.close(); // Закрываем окно выезда
         });
 
@@ -264,6 +252,7 @@ public class FronEnd extends Application {
         departureStage.setScene(departureScene);
         departureStage.show();
         System.out.println("Кнопка 'Выезд' нажата!");
+
 
         return departure;
         // Добавьте здесь код для обработки нажатия кнопки "Выезд"
@@ -529,6 +518,31 @@ public class FronEnd extends Application {
         }
         // Добавьте здесь код для обработки нажатия кнопки "Статистика"
     }
+    public static String get_cost(List<String> pay, String depature_time) {
+        String cost = pay.get(0);
+        String check_in_time = pay.get(1);
+        int pricePerHour = Integer.parseInt(cost);
+        LocalDateTime departureTime = null;
+        LocalDateTime checkInTime = null;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        try {
+            departureTime = LocalDateTime.parse(depature_time, formatter);
+            checkInTime = LocalDateTime.parse(check_in_time, formatter);
+        } catch (DateTimeParseException e) {
+            System.err.println("Ошибка при разборе даты: " + e.getMessage());
+        }
+
+        Duration duration = Duration.between(checkInTime, departureTime);
+
+        long hours = duration.toHours(); // Общее количество *полных* часов
+
+        double totalCost = (hours + 1) * pricePerHour;
+        System.out.println(totalCost);
+        return String.valueOf(totalCost);
+    }
+
 
     public static void main(String[] args) {
         try{
