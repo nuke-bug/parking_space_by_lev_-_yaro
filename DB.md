@@ -37,3 +37,5 @@ get_history_this_day() // кол-во выездов за последние с�
 get_free_places() // вытаскиваем только не занятые места
 post_new_client(owner, number, car_number, car_brand, сheck_in_time) //добавляет новую запись в  history, изменяет запись в parking_spaces на "занято".
 post_old_client(car_number, сheck_in_time, departure_time, payment) // обновляет соответствующую запись в history,  изменяет запись в parking_spaces на "не занято".
+get_cost_and_time возвращает время и цену места
+

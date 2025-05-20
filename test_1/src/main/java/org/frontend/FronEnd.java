@@ -148,6 +148,11 @@ public class FronEnd extends Application {
                 new Label("Свободное место: "), freeSpaceField,
                 currentTimeLabel
         );
+        try{
+            bd.get_free_places();
+        } catch (Exception e_1) {
+            e_1.printStackTrace();
+        }
 
         Button saveButton = new Button("Сохранить");
         customizeButton(saveButton);
@@ -245,7 +250,11 @@ public class FronEnd extends Application {
 //            Scene priceScene = new Scene(priceLayout, 250, 100);
 //            priceStage.setScene(priceScene);
 //            priceStage.show();
-
+            try{
+                bd.post_old_client(departure);
+            } catch (Exception e_1) {
+                e_1.printStackTrace();
+            }
             departureStage.close(); // Закрываем окно выезда
         });
 
@@ -270,6 +279,62 @@ public class FronEnd extends Application {
             return null; // Если номер не найден
         }
     }
+
+    private void handleCarHistoryAction(String car_number) {
+        try {
+            Stage stage = new Stage();
+            TableView<ParkingHistory> table = new TableView<>();
+
+            // Создание колонок
+            TableColumn<ParkingHistory, Integer> numberCol = new TableColumn<>("№");
+            numberCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getNumber()).asObject());
+
+            TableColumn<ParkingHistory, String> ownerCol = new TableColumn<>("Владелец");
+            ownerCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
+
+            TableColumn<ParkingHistory, String> carNumberCol = new TableColumn<>("Номер авто");
+            carNumberCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCarNumber()));
+
+            TableColumn<ParkingHistory, String> carBrandCol = new TableColumn<>("Марка авто");
+            carBrandCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCarBrand()));
+
+            TableColumn<ParkingHistory, String> checkInCol = new TableColumn<>("Время заезда");
+            checkInCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCheckInTime()));
+
+            TableColumn<ParkingHistory, String> departureCol = new TableColumn<>("Время выезда");
+            departureCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDepartureTime()));
+
+            TableColumn<ParkingHistory, String> paymentCol = new TableColumn<>("Оплата");
+            paymentCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPayment()));
+            numberCol.setPrefWidth(50);       // Ширина для номера
+            ownerCol.setPrefWidth(150);       // Ширина для владельца
+            carNumberCol.setPrefWidth(100);   // Ширина для номера авто
+            carBrandCol.setPrefWidth(150);    // Ширина для марки авто
+            checkInCol.setPrefWidth(150);     // Ширина для времени заезда
+            departureCol.setPrefWidth(150);   // Ширина для времени выезда
+            paymentCol.setPrefWidth(100);     // Ширина для оплаты
+            // Добавляем все колонки в таблицу
+            table.getColumns().addAll(
+                    numberCol,
+                    ownerCol,
+                    carNumberCol,
+                    carBrandCol,
+                    checkInCol,
+                    departureCol,
+                    paymentCol
+            );
+            // Загрузка данных
+            table.getItems().setAll(find_in_history(car_number));
+            // Настройка окна
+            stage.setScene(new Scene(table, 1000, 600));
+            stage.setTitle("История парковки");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Ошибка: " + e.getMessage()).show();
+        }
+    }
+
     private void handleHistoryAction() {
         try {
             Stage stage = new Stage();
@@ -342,7 +407,10 @@ public class FronEnd extends Application {
         Label resultLabel = new Label(""); // Для отображения результатов поиска
 
         searchConfirmButton.setOnAction(event -> {
-            String licensePlate = searchField.getText().toUpperCase();  // Получаем номер и приводим к верхнему регистру
+            String licensePlate = searchField.getText();  // Получаем номер и приводим к верхнему регистру
+            // #todo
+            //handleCarHistoryAction(licensePlate);
+
             System.out.println("Номер машины: " + licensePlate);
 //            CarInfo carInfo = findCarByLicensePlate(licensePlate);
 //
@@ -407,6 +475,58 @@ public class FronEnd extends Application {
 
     private void handleStatisticsAction() {
         System.out.println("Кнопка 'Статистика' нажата!");
+        try {
+            Stage stage = new Stage();
+            TableView<ParkingHistory> table = new TableView<>();
+
+            // Создание колонок
+            TableColumn<ParkingHistory, Integer> numberCol = new TableColumn<>("№");
+            numberCol.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getNumber()).asObject());
+
+            TableColumn<ParkingHistory, String> ownerCol = new TableColumn<>("Владелец");
+            ownerCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOwner()));
+
+            TableColumn<ParkingHistory, String> carNumberCol = new TableColumn<>("Номер авто");
+            carNumberCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCarNumber()));
+
+            TableColumn<ParkingHistory, String> carBrandCol = new TableColumn<>("Марка авто");
+            carBrandCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCarBrand()));
+
+            TableColumn<ParkingHistory, String> checkInCol = new TableColumn<>("Время заезда");
+            checkInCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCheckInTime()));
+
+            TableColumn<ParkingHistory, String> departureCol = new TableColumn<>("Время выезда");
+            departureCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDepartureTime()));
+
+            TableColumn<ParkingHistory, String> paymentCol = new TableColumn<>("Оплата");
+            paymentCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPayment()));
+            numberCol.setPrefWidth(50);       // Ширина для номера
+            ownerCol.setPrefWidth(150);       // Ширина для владельца
+            carNumberCol.setPrefWidth(100);   // Ширина для номера авто
+            carBrandCol.setPrefWidth(150);    // Ширина для марки авто
+            checkInCol.setPrefWidth(150);     // Ширина для времени заезда
+            departureCol.setPrefWidth(150);   // Ширина для времени выезда
+            paymentCol.setPrefWidth(100);     // Ширина для оплаты
+            // Добавляем все колонки в таблицу
+            table.getColumns().addAll(
+                    numberCol,
+                    ownerCol,
+                    carNumberCol,
+                    carBrandCol,
+                    checkInCol,
+                    departureCol,
+                    paymentCol
+            );
+            // Загрузка данных
+            table.getItems().setAll(get_history_this_day());
+            // Настройка окна
+            stage.setScene(new Scene(table, 1000, 600));
+            stage.setTitle("История парковки за день");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Ошибка: " + e.getMessage()).show();
+        }
         // Добавьте здесь код для обработки нажатия кнопки "Статистика"
     }
 

@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,16 +48,6 @@ public class bd {
                 ");");
         System.out.println("Таблица parking_spaces создана");
 
-
-        statmt.execute("CREATE TABLE if not exists 'cars' (" +
-                "'id' INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "'owner' text," +  //владелец (ФИО)
-                "'car_number' text," +  // Номер машины
-                "'car_brand' text" +  // Марка
-                ");");
-        System.out.println("Таблица cars создана");
-
-
         statmt.execute("CREATE TABLE if not exists 'history' (" +
                 "'id' INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "'owner' text," +  //владелец (фио)
@@ -67,6 +59,61 @@ public class bd {
                 "'payment' text" +  // оплата(0 по умолчанию)
                 ");");
         System.out.println("Таблица history создана");
+    }
+
+    public static List<ParkingHistory> find_in_history(String car_number) throws SQLException {
+        List<ParkingHistory> car_history = new ArrayList<>();
+        try (ResultSet rs = statmt.executeQuery("SELECT * FROM history where car_number = '" + car_number + "'")) {
+            while (rs.next()) {
+                car_history.add(new ParkingHistory(
+                        rs.getInt("number"),
+                        rs.getString("owner"),
+                        rs.getString("car_number"),
+                        rs.getString("car_brand"),
+                        rs.getString("check_in_time"),
+                        rs.getString("departure_time"),
+                        rs.getString("payment")
+                ));
+            }
+        }
+        return car_history;
+    }
+
+    public static List<ParkingHistory> get_history_this_day() throws SQLException {
+        List<ParkingHistory> car_history = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDateTime = now.format(formatter);
+        try (ResultSet rs = statmt.executeQuery("SELECT * FROM history where check_in_time like '" + formattedDateTime +
+                "*' or departure_time like '" + formattedDateTime + "*'")) {
+            while (rs.next()) {
+                car_history.add(new ParkingHistory(
+                        rs.getInt("number"),
+                        rs.getString("owner"),
+                        rs.getString("car_number"),
+                        rs.getString("car_brand"),
+                        rs.getString("check_in_time"),
+                        rs.getString("departure_time"),
+                        rs.getString("payment")
+                ));
+            }
+        }
+        return car_history;
+    }
+
+    public static List<ParkingSpace> get_free_places() throws SQLException {
+        List<ParkingSpace> free_parking_spaces = new ArrayList<>();
+        try (ResultSet rs = statmt.executeQuery("SELECT * FROM parking_spaces where busyness = 'свободно';")) {
+            while (rs.next()) {
+                free_parking_spaces.add(new ParkingSpace(
+                        rs.getInt("number"),
+                        rs.getString("type_of_place"),
+                        rs.getString("busyness"),
+                        rs.getString("cost")
+                ));
+            }
+        }
+        return free_parking_spaces;
     }
 
     public static void post_new_client(List<String> registration) throws SQLException {
@@ -88,9 +135,9 @@ public class bd {
         //String number = registration.get(2);
         //String delta_time = registration.get(3);
 
-        statmt.execute("UPDATE parking_spaces SET busyness = 'свободно' WHERE (number =" +
-                " (select number from history where car_number = '" + car_number + "' and (payment = 0));");
-        statmt.execute("UPDATE history SET departure_time = '" + departure_time + "' WHERE (car_number = '" + car_number + ") " +
+        statmt.execute("UPDATE parking_spaces SET busyness = 'свободно' WHERE number =" +
+                " (select number from history where car_number = '" + car_number + "' and payment = '0');");
+        statmt.execute("UPDATE history SET departure_time = '" + departure_time + "' WHERE (car_number = '" + car_number + "') " +
                 " AND (payment = '0');");
 
     }
@@ -99,7 +146,7 @@ public class bd {
         statmt.execute("INSERT INTO parking_spaces ('type_of_place', 'number', 'busyness', 'cost')" +
                 "VALUES ('инвалидное', 1, 'свободно', 100);");
         statmt.execute("INSERT INTO parking_spaces ('type_of_place', 'number', 'busyness', 'cost')" +
-                "VALUES ('универсальное', 2, 'свободно', 200);");  // Исправлено '468rt4' на число
+                "VALUES ('универсальное', 2, 'свободно', 200);");
         statmt.execute("INSERT INTO parking_spaces ('type_of_place', 'number', 'busyness', 'cost')" +
                 "VALUES ('обрезанное(мотоцикл)', 3, 'занято', 300);");
         System.out.println("Таблица parking_spaces заполнена");
