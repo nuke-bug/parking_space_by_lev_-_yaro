@@ -84,8 +84,9 @@ public class bd {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDateTime = now.format(formatter);
-        try (ResultSet rs = statmt.executeQuery("SELECT * FROM history where check_in_time like '" + formattedDateTime +
-                "*' or departure_time like '" + formattedDateTime + "*'")) {
+        System.out.println(formattedDateTime);
+        try (ResultSet rs = statmt.executeQuery("SELECT * FROM history where check_in_time like '*" + formattedDateTime + "*';")) {
+               // "*' or departure_time like '" + formattedDateTime + "*'")) {
             while (rs.next()) {
                 car_history.add(new ParkingHistory(
                         rs.getInt("number"),
@@ -128,7 +129,7 @@ public class bd {
 
     }
 
-    public static void post_old_client(List<String> registration) throws SQLException {
+    public static List<String> post_old_client(List<String> registration) throws SQLException {
         String departure_time = registration.get(0);
         String car_number = registration.get(1);
 
@@ -139,6 +140,24 @@ public class bd {
                 " (select number from history where car_number = '" + car_number + "' and payment = '0');");
         statmt.execute("UPDATE history SET departure_time = '" + departure_time + "' WHERE (car_number = '" + car_number + "') " +
                 " AND (payment = '0');");
+
+        List<String> cost_and_time = new ArrayList<>();
+        String query  = "SELECT cost FROM parking_spaces where number=" +
+                "(select number from history WHERE (car_number = '" + car_number + "') " +
+                "AND (payment = '0'))";
+        try (ResultSet rs = statmt.executeQuery(query)){
+            rs.next();
+            cost_and_time.add(new String(rs.getString("cost")));
+        }
+        query  = "SELECT check_in_time FROM history WHERE (car_number = '" + car_number + "') " +
+                "AND (payment = '0');";
+        try (ResultSet rs = statmt.executeQuery(query)) {
+            rs.next();
+            cost_and_time.add(new String(rs.getString("check_in_time")));
+        }
+        System.out.println(cost_and_time);
+        return cost_and_time;
+
 
     }
 
