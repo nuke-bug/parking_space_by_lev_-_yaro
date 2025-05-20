@@ -397,7 +397,9 @@ public class FronEnd extends Application {
             );
             // Загрузка данных
             table.getItems().setAll(getHistory());
+            /*
             Button calculateButton = new Button("Рассчитать общий доход");
+
             calculateButton.setOnAction(e -> {
                 String total = totalPayment(tableView.getItems()); // Вызываем метод напрямую
                 totalPaymentLabel.setText("Общий доход: " + total);
@@ -406,7 +408,7 @@ public class FronEnd extends Application {
             VBox vbox = new VBox(10);
             vbox.setPadding(new Insets(10));
             vbox.getChildren().addAll(tableView, calculateButton, totalPaymentLabel);
-            
+            */
             // Настройка окна
             stage.setScene(new Scene(table, 1000, 600));
             stage.setTitle("История парковки");
