@@ -209,6 +209,10 @@ public class FronEnd extends Application {
                 registration.add(registrationTime);
                 registration.add(freeSpace);
 
+                if (!check_new_client(registration)){
+                    new Alert(Alert.AlertType.WARNING, "Пожалуйста, используйте свободные места.").show();
+                    return;
+                }
                 post_new_client(registration);
                 // Закрываем окно после сохранения
                 registrationStage.close();
@@ -220,9 +224,7 @@ public class FronEnd extends Application {
         // Добавьте здесь код для обработки нажатия кнопки "Регистрация"
     }
 
-    public static List<String> handleDepartureAction() {
-
-        List<String> departure = new ArrayList<>();
+    public static void handleDepartureAction() {
         // departureTime
         Stage departureStage = new Stage();
         departureStage.setTitle("Выезд автомобиля");
@@ -250,18 +252,20 @@ public class FronEnd extends Application {
         // Создаем кнопку "Подтвердить выезд"
         Button confirmDepartureButton = new Button("Подтвердить выезд");
         confirmDepartureButton.setOnAction(e -> {
+            List<String> departure = new ArrayList<>();
             String licensePlate = licensePlateField.getText();
             departure.add(departureTime);
             departure.add(licensePlateField.getText());
             System.out.println(departure);
+
             try{
+                if (!check_old_client(departure.get(1))){
+                new Alert(Alert.AlertType.WARNING, "Пожалуйста, оплатите существующую машину.").show();
+                departure = new ArrayList<>();
+                return;
+            }
                 String totalPrise = get_cost(bd.post_old_client(departure), departureTime);
-//                if (departureTime == null) {
-//                    // Обработка случая, когда автомобиль с таким номером не найден
-//                    Alert alert = new Alert(Alert.AlertType.ERROR, "Автомобиль с таким номером не найден!");
-//                    alert.showAndWait();
-//                    return;
-//                }
+                post_cost(totalPrise, departure);
                 Stage priceStage = new Stage();
                 priceStage.setTitle("Стоимость парковки");
 
@@ -286,8 +290,6 @@ public class FronEnd extends Application {
         departureStage.setScene(departureScene);
         departureStage.show();
         System.out.println("Кнопка 'Выезд' нажата!");
-
-        return departure;
         // Добавьте здесь код для обработки нажатия кнопки "Выезд"
     }
 

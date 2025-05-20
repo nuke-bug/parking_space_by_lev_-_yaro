@@ -120,22 +120,28 @@ public class bd {
         return free_parking_spaces;
     }
 
-    public static List<ParkingSpace> get_occupied_places() throws SQLException {
-        List<ParkingSpace> free_parking_spaces = new ArrayList<>();
-        try (ResultSet rs = statmt.executeQuery("SELECT number FROM parking_spaces where busyness = 'занято';")) {
-            while (rs.next()) {
-                free_parking_spaces.add(new ParkingSpace(
-                        rs.getInt("number"),
-                        rs.getString("type_of_place"),
-                        rs.getString("busyness"),
-                        rs.getString("cost")
-                ));
+    public static boolean check_old_client(String car_number) throws SQLException {
+        String query = "SELECT busyness FROM parking_spaces where number=" +
+                " (select number from history where car_number = '" +
+                car_number + "' and payment = '0');";
+        try (ResultSet rs = statmt.executeQuery(query)) {
+            if (rs.next()) { // Проверяем есть ли результат и переходим к первой записи
+                String answer = rs.getString("busyness"); // Получаем значение ПОСЛЕ перехода к записи
+
+                // Правильное сравнение строк через equals()
+                boolean isAvailable = "занято".equals(answer);
+
+                System.out.println("Is available: " + isAvailable);
+                System.out.println("Current status: " + answer);
+                return isAvailable;
+
+            }else{
+                return false;
             }
         }
-        return free_parking_spaces;
     }
 
-    public static boolean post_new_client(List<String> registration) throws SQLException {
+    public static boolean check_new_client(List<String> registration) throws SQLException {
         String owner = registration.get(0);
         String car_brand = registration.get(1);
         String car_number = registration.get(2);
@@ -151,11 +157,21 @@ public class bd {
 
                 System.out.println("Is available: " + isAvailable);
                 System.out.println("Current status: " + answer);
-                if (!isAvailable){
-                    return false;
-                }
+                return isAvailable;
+
+            } else {
+                return false;
             }
         }
+    }
+
+    public static boolean post_new_client(List<String> registration) throws SQLException {
+        String owner = registration.get(0);
+        String car_brand = registration.get(1);
+        String car_number = registration.get(2);
+        String check_in_time = registration.get(3);
+        String number = registration.get(4);
+        String query = "SELECT * FROM parking_spaces where number='" + number + "';";
 
         statmt.execute("INSERT INTO history (owner, number, car_number, car_brand, check_in_time, departure_time, payment)" +
                 " VALUES ('" + owner + "', " + number + ", '" + car_number + "', '" + car_brand + "', '" + check_in_time + "', 'не выехал', '0');");
@@ -195,6 +211,14 @@ public class bd {
         return cost_and_time;
 
 
+    }
+
+    public static void post_cost(String payment,List<String> registration) throws SQLException {
+        String departure_time = registration.get(0);
+        String car_number = registration.get(1);
+
+        statmt.execute("UPDATE history SET payment = '" + payment + "' WHERE " +
+                "car_number = '" + car_number + "' and payment = '0';");
     }
 
     public static void WriteDB() throws SQLException {

@@ -39,5 +39,8 @@ post_new_client(owner, number, car_number, car_brand, сheck_in_time) //доба
 post_old_client(car_number, сheck_in_time, departure_time, payment) // обновляет соответствующую запись в history,  изменяет запись в parking_spaces на "не занято".
 get_cost_and_time возвращает время и цену места
 
-
+- [x] оплата добавить в историю
+- [x] в выезде добавить проверку
+- [ ] вывод суммы за день в статистике
+- [ ] вывод суммы за всё время в статистике
 
