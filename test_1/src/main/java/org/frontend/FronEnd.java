@@ -349,7 +349,7 @@ public class FronEnd extends Application {
             table.getItems().setAll(find_in_history(car_number));
             // Настройка окна
             stage.setScene(new Scene(table, 1000, 600));
-            stage.setTitle("История парковки");
+            stage.setTitle("История для данной машины парковки");
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

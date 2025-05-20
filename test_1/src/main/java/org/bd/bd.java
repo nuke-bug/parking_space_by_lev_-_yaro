@@ -24,9 +24,11 @@ public class bd {
         statmt = conn.createStatement();
         System.out.println("База подключена!");
     }
+
     public static void bd_main() throws Exception {
         Conn();
     }
+
     public static void main(String[] args) throws Exception {
         Conn();
         CreateDB();
@@ -76,6 +78,7 @@ public class bd {
                 ));
             }
         }
+        System.out.println(car_history);
         return car_history;
     }
 
@@ -85,8 +88,8 @@ public class bd {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDateTime = now.format(formatter);
         System.out.println(formattedDateTime);
-        try (ResultSet rs = statmt.executeQuery("SELECT * FROM history where check_in_time like '*" + formattedDateTime + "*';")) {
-               // "*' or departure_time like '" + formattedDateTime + "*'")) {
+        try (ResultSet rs = statmt.executeQuery("SELECT * FROM history where check_in_time like '%" + formattedDateTime + "%';")) {
+            // "*' or departure_time like '" + formattedDateTime + "*'")) {
             while (rs.next()) {
                 car_history.add(new ParkingHistory(
                         rs.getInt("number"),
@@ -117,16 +120,49 @@ public class bd {
         return free_parking_spaces;
     }
 
-    public static void post_new_client(List<String> registration) throws SQLException {
+    public static List<ParkingSpace> get_occupied_places() throws SQLException {
+        List<ParkingSpace> free_parking_spaces = new ArrayList<>();
+        try (ResultSet rs = statmt.executeQuery("SELECT number FROM parking_spaces where busyness = 'занято';")) {
+            while (rs.next()) {
+                free_parking_spaces.add(new ParkingSpace(
+                        rs.getInt("number"),
+                        rs.getString("type_of_place"),
+                        rs.getString("busyness"),
+                        rs.getString("cost")
+                ));
+            }
+        }
+        return free_parking_spaces;
+    }
+
+    public static boolean post_new_client(List<String> registration) throws SQLException {
         String owner = registration.get(0);
         String car_brand = registration.get(1);
         String car_number = registration.get(2);
         String check_in_time = registration.get(3);
         String number = registration.get(4);
+        String query = "SELECT * FROM parking_spaces where number='" + number + "';";
+        try (ResultSet rs = statmt.executeQuery(query)) {
+            if (rs.next()) { // Проверяем есть ли результат и переходим к первой записи
+                String answer = rs.getString("busyness"); // Получаем значение ПОСЛЕ перехода к записи
+
+                // Правильное сравнение строк через equals()
+                boolean isAvailable = "свободно".equals(answer);
+
+                System.out.println("Is available: " + isAvailable);
+                System.out.println("Current status: " + answer);
+                if (!isAvailable){
+                    return false;
+                }
+            }
+        }
+
         statmt.execute("INSERT INTO history (owner, number, car_number, car_brand, check_in_time, departure_time, payment)" +
                 " VALUES ('" + owner + "', " + number + ", '" + car_number + "', '" + car_brand + "', '" + check_in_time + "', 'не выехал', '0');");
         statmt.execute("UPDATE parking_spaces SET busyness = 'занято' WHERE number = " + number + " ;");
 
+        System.out.println("True");
+        return true;
     }
 
     public static List<String> post_old_client(List<String> registration) throws SQLException {
