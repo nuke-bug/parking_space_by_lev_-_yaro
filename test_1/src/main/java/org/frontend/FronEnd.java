@@ -114,7 +114,7 @@ public class FronEnd extends Application {
     }
 
     // Методы обработки действий кнопок
-    public static List<String> handleRegistrationAction() {
+    public static void handleRegistrationAction() {
 
         List<String> registration = new ArrayList<>();
         // fio, carModel, licensePlate, registrationTime, freeSpaceField
@@ -175,7 +175,7 @@ public class FronEnd extends Application {
             }
             System.out.println("Кнопка 'Сохранить' нажата!");
         });
-        return registration;
+        // return registration;
         // Добавьте здесь код для обработки нажатия кнопки "Регистрация"
     }
 

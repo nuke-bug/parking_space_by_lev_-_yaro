@@ -26,14 +26,12 @@ public class bd {
         Conn();
     }
     public static void main(String[] args) throws Exception {
-        /*
         Conn();
         CreateDB();
         WriteDB();
-        ReadDB();
-        getHistory();
+        Write_History();
         CloseDB();
-         */
+        if (conn != null) conn.close();
 
         // Не забудьте закрыть соединение когда оно больше не нужно
     }
@@ -77,16 +75,24 @@ public class bd {
         String car_number = registration.get(2);
         String check_in_time = registration.get(3);
         String number = registration.get(4);
-
-        // данные из выезда
-//        List<String> depature = FronEnd.handleDepartureAction();
-//        String departure_time = depature.get(0);
-//        String depature_car_number = depature.get(1);
-//
-//        String search_car_number = FronEnd.handleSearchAction();
-
         statmt.execute("INSERT INTO history (owner, number, car_number, car_brand, check_in_time, departure_time, payment)" +
                 " VALUES ('" + owner + "', " + number + ", '" + car_number + "', '" + car_brand + "', '" + check_in_time + "', 'не выехал', '0');");
+        statmt.execute("UPDATE parking_spaces SET busyness = 'занято' WHERE number = " + number + " ;");
+
+    }
+
+    public static void post_old_client(List<String> registration) throws SQLException {
+        String departure_time = registration.get(0);
+        String car_number = registration.get(1);
+
+        //String number = registration.get(2);
+        //String delta_time = registration.get(3);
+
+        statmt.execute("UPDATE parking_spaces SET busyness = 'свободно' WHERE (number =" +
+                " (select number from history where car_number = '" + car_number + "' and (payment = 0));");
+        statmt.execute("UPDATE history SET departure_time = '" + departure_time + "' WHERE (car_number = '" + car_number + ") " +
+                " AND (payment = '0');");
+
     }
 
     public static void WriteDB() throws SQLException {
@@ -201,15 +207,15 @@ public class bd {
 
 
 
-    public static void ReadDB() throws ClassNotFoundException, SQLException {
-        resSet = statmt.executeQuery("SELECT * FROM history");
-    }
+//    public static void ReadDB() throws ClassNotFoundException, SQLException {
+//        resSet = statmt.executeQuery("SELECT * FROM history");
+//    }
 
     public static void CloseDB() throws ClassNotFoundException, SQLException
     {
         conn.close();
         statmt.close();
-        resSet.close();
+        //resSet.close();
 
         System.out.println("Соединения закрыты");
     }
