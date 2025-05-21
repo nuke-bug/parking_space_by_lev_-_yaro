@@ -2,7 +2,6 @@ package org.frontend;
 
 // Для JavaFX
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -23,9 +22,7 @@ import javafx.geometry.Insets;
 
 import org.bd.bd;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.bd.bd.ParkingHistory;
@@ -254,7 +251,6 @@ public class FronEnd extends Application {
         Button confirmDepartureButton = new Button("Подтвердить выезд");
         confirmDepartureButton.setOnAction(e -> {
             List<String> departure = new ArrayList<>();
-            String licensePlate = licensePlateField.getText();
             departure.add(departureTime);
             departure.add(licensePlateField.getText());
             System.out.println(departure);
@@ -262,7 +258,6 @@ public class FronEnd extends Application {
             try{
                 if (!check_old_client(departure.get(1))){
                 new Alert(Alert.AlertType.WARNING, "Пожалуйста, оплатите существующую машину.").show();
-                departure = new ArrayList<>();
                 return;
             }
                 String totalPrise = get_cost(bd.post_old_client(departure), departureTime);
@@ -439,13 +434,6 @@ public class FronEnd extends Application {
             handleCarHistoryAction(licensePlate);
 
             System.out.println("Номер машины: " + licensePlate);
-//            CarInfo carInfo = findCarByLicensePlate(licensePlate);
-//
-//            if (carInfo != null) {
-//                resultLabel.setText("ФИО: " + carInfo.ownerName + ", Модель: " + carInfo.carModel);
-//            } else {
-//                resultLabel.setText("Машина с таким номером не найдена.");
-//            }
         });
 
         searchLayout.getChildren().addAll(searchField, searchConfirmButton, resultLabel);
