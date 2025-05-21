@@ -490,6 +490,8 @@ public class FronEnd extends Application {
             );
             // Загрузка данных
             table.getItems().setAll(get_parking_spaces());
+
+
             // Настройка окна
             stage.setScene(new Scene(table, 1000, 600));
             stage.setTitle("Текущее состояние");
@@ -546,8 +548,20 @@ public class FronEnd extends Application {
             );
             // Загрузка данных
             table.getItems().setAll(get_history_this_day());
+            Button calculateButton = new Button("Рассчитать общий доход");
+            customizeButton(calculateButton);
+            calculateButton.setOnAction(e -> {
+                ObservableList<ParkingHistory> data = table.getItems();
+                String total = totalPayment(data); // Вызываем метод из ParkingHistory
+                totalPaymentLabel.setText("Общий доход за день: " + total);
+            });
+
+            VBox vbox = new VBox(10);
+            vbox.setPadding(new Insets(10));
+            vbox.getChildren().addAll(table, calculateButton, totalPaymentLabel);
+
             // Настройка окна
-            stage.setScene(new Scene(table, 1000, 600));
+            stage.setScene(new Scene(vbox, 1000, 600));
             stage.setTitle("История парковки за день");
             stage.show();
         } catch (Exception e) {
@@ -578,7 +592,6 @@ public class FronEnd extends Application {
 
         double totalCost = (hours + 1) * pricePerHour;
         System.out.println(totalCost);
-        // Добавить функцию которая запихнет её в бд
         return String.valueOf(totalCost);
     }
 
