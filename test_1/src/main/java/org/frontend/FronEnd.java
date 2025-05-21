@@ -349,12 +349,10 @@ public class FronEnd extends Application {
         }
     }
 
-    private TableView<ParkingHistory> tableView;
-
+    private Label totalPaymentLabel = new Label("Общий доход: ");
     private void handleHistoryAction() {
         try {
             Stage stage = new Stage();
-            Label totalPaymentLabel = null;
             TableView<ParkingHistory> table = new TableView<>();
 
             // Создание колонок
@@ -397,20 +395,21 @@ public class FronEnd extends Application {
             );
             // Загрузка данных
             table.getItems().setAll(getHistory());
-            /*
-            Button calculateButton = new Button("Рассчитать общий доход");
 
+            Button calculateButton = new Button("Рассчитать общий доход");
+            customizeButton(calculateButton);
             calculateButton.setOnAction(e -> {
-                String total = totalPayment(tableView.getItems()); // Вызываем метод напрямую
+                ObservableList<ParkingHistory> data = table.getItems();
+                String total = totalPayment(data); // Вызываем метод из ParkingHistory
                 totalPaymentLabel.setText("Общий доход: " + total);
             });
 
             VBox vbox = new VBox(10);
             vbox.setPadding(new Insets(10));
-            vbox.getChildren().addAll(tableView, calculateButton, totalPaymentLabel);
-            */
+            vbox.getChildren().addAll(table, calculateButton, totalPaymentLabel);
+
             // Настройка окна
-            stage.setScene(new Scene(table, 1000, 600));
+            stage.setScene(new Scene(vbox, 1000, 600));
             stage.setTitle("История парковки");
             stage.show();
         } catch (Exception e) {
@@ -590,12 +589,14 @@ public class FronEnd extends Application {
             BigDecimal payment = new BigDecimal(paymentString);
             totalPay = totalPay.add(payment);
         }
+        System.out.println(totalPay);
         return totalPay.toString();
     }
 
 
     public static void main(String[] args) {
         try{
+
             bd_main();
         } catch (Exception e) {
             e.printStackTrace();
