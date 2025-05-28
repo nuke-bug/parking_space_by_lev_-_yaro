@@ -589,6 +589,16 @@ public class FronEnd extends Application {
         return totalPay.toString();
     }
 
+    public static void main_start() {
+        try {
+
+            bd_main();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        launch();
+    }
 
     public static void main(String[] args) {
         try{
